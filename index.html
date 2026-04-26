@@ -1,92 +1,369 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Grupo Mardi — Coming Soon</title>
-  <style>
-    *, *::before, *::after {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+  <title>GMD Agencia Creativa</title>
+  <meta name="description" content="GMD — Boutique creativa independiente. Construimos marcas desde la raíz desde 1987." />
 
-    body {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #0a0a0a;
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      color: #f0f0f0;
-      text-align: center;
-      padding: 2rem;
-    }
+  <!-- Fonts: Manrope (headings) + Inter (body) + Playfair Display (editorial accents) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,700;0,9..40,800;1,9..40,400&family=Inter:wght@300;400;500&family=Cormorant+Garamond:ital,wght@1,400;1,600&display=swap" rel="stylesheet" />
 
-    .container {
-      max-width: 640px;
-    }
+  <!-- Lenis smooth scroll CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.15/dist/lenis.css" />
 
-    .logo {
-      font-size: 0.85rem;
-      font-weight: 700;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: #c9a84c;
-      margin-bottom: 3rem;
+  <!-- Tailwind Play CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            manrope:  ['DM Sans',           'sans-serif'],
+            inter:    ['Inter',              'sans-serif'],
+            playfair: ['Cormorant Garamond', 'serif'],
+          },
+          colors: { gmd: '#cc0000' },
+        }
+      }
     }
+  </script>
 
-    h1 {
-      font-size: clamp(2.5rem, 6vw, 4rem);
-      font-weight: 300;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-      margin-bottom: 1.5rem;
-      color: #ffffff;
-    }
+  <!-- Scroll-to-top: runs synchronously before any JS library can restore position -->
+  <script>
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0, 0);
+  </script>
 
-    h1 span {
-      color: #c9a84c;
-      font-weight: 600;
-    }
+  <!-- Favicon -->
+  <link rel="icon" href="Logo GMD/Logo-GMD-BASE-02.png" type="image/png" />
 
-    p {
-      font-size: 1.05rem;
-      line-height: 1.8;
-      color: #999;
-      margin-bottom: 3rem;
-    }
-
-    .divider {
-      width: 48px;
-      height: 2px;
-      background: #c9a84c;
-      margin: 0 auto 3rem;
-    }
-
-    .badge {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: #c9a84c;
-      border: 1px solid #c9a84c33;
-      padding: 0.5rem 1.25rem;
-      border-radius: 2rem;
-    }
-  </style>
+  <!-- Custom stylesheet -->
+  <link rel="stylesheet" href="styles.css" />
 </head>
-<body>
-  <div class="container">
-    <div class="logo">Grupo Mardi</div>
-    <h1>Something <span>great</span><br>is coming</h1>
-    <div class="divider"></div>
-    <p>
-      Welcome to Grupo Mardi. Our new website is currently under construction.
-      We are working on something great — stay tuned!
-    </p>
-    <div class="badge">Coming Soon</div>
+
+<body class="bg-white text-black font-inter overflow-x-hidden">
+
+  <!-- ════════════════════════════════════════
+       CURSOR FOLLOWER IMAGE (fixed overlay)
+  ════════════════════════════════════════ -->
+  <div id="cursor-img" aria-hidden="true">
+    <img id="cursor-img-el" src="" alt="" />
   </div>
+
+  <!-- ════════════════════════════════════════
+       HERO LOGO FIXED
+       Anchored top-left. GSAP scales it down
+       in-place to navbar size on scroll.
+  ════════════════════════════════════════ -->
+  <div id="hero-logo-fixed" aria-hidden="true">
+    <img id="hero-logo-img" src="Logo GMD/Logo-GMD-BASE-01.png" alt="GMD" />
+    <div id="hero-logo-labels">
+      <span>Grupo Mardi</span>
+      <span>Agencia Creativa</span>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       NAVBAR
+       Logo hidden until hero logo arrives here.
+  ════════════════════════════════════════ -->
+  <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between">
+    <img id="nav-logo-img" src="Logo GMD/Logo-GMD-BASE-01.png" alt="" aria-hidden="true" />
+    <div class="nav-links flex items-center gap-8">
+      <a href="#about"        class="nav-cta font-inter text-[0.65rem] tracking-[0.28em] uppercase">Nosotros</a>
+      <a href="#capabilities" class="nav-cta font-inter text-[0.65rem] tracking-[0.28em] uppercase">Servicios</a>
+      <a href="#clients"      class="nav-cta font-inter text-[0.65rem] tracking-[0.28em] uppercase">Clientes</a>
+      <a href="#contact"      class="nav-cta font-inter text-[0.65rem] tracking-[0.28em] uppercase">Contacto</a>
+    </div>
+    <button id="hamburger" aria-label="Abrir menú" aria-expanded="false">
+      <span class="ham-line"></span>
+      <span class="ham-line"></span>
+    </button>
+  </nav>
+
+  <!-- Mobile navigation panel -->
+  <div id="mobile-nav" aria-hidden="true">
+    <a href="#about"        class="mobile-nav-link font-inter">Nosotros</a>
+    <a href="#capabilities" class="mobile-nav-link font-inter">Servicios</a>
+    <a href="#clients"      class="mobile-nav-link font-inter">Clientes</a>
+    <a href="#contact"      class="mobile-nav-link font-inter">Contacto</a>
+  </div>
+
+  <!-- ════════════════════════════════════════
+       HERO
+       Text sits at the bottom of the viewport.
+       The fixed #hero-logo-fixed covers the center.
+  ════════════════════════════════════════ -->
+  <section id="hero" class="relative min-h-svh grid grid-cols-1 md:grid-cols-2">
+
+    <!-- Left column: reserved for the fixed logo + sub-copy at bottom -->
+    <div class="hero-left flex flex-col justify-end px-12 md:px-16 pb-20 md:pb-32">
+      <p class="hero-sub font-inter font-light text-sm text-neutral-500 leading-relaxed max-w-[22ch]">
+        Boutique creativa independiente.<br>
+        <em class="font-playfair not-italic text-neutral-400">Construimos marcas desde la raíz.</em>
+      </p>
+    </div>
+
+    <!-- Right column: label + massive heading + CTA -->
+    <div class="hero-right flex flex-col justify-end px-8 md:px-12 pb-20 md:pb-32">
+      <span class="hero-label font-inter text-[0.6rem] tracking-[0.3em] uppercase text-neutral-400 mb-6 block">
+        Est. 1987 &mdash; Ciudad de México
+      </span>
+      <h1 class="hero-heading font-manrope font-extrabold text-black leading-[0.88] tracking-[-0.04em] mb-10"
+          style="font-size:clamp(3rem,6.5vw,8rem)">
+        Diseñamos<br>lo que<br>importa.
+      </h1>
+      <a href="#about" class="hero-cta group inline-flex items-center gap-4 font-inter text-[0.65rem] tracking-[0.28em] uppercase self-start">
+        <span class="cta-line"></span>
+        Descúbrenos
+      </a>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="scroll-hint hidden md:flex flex-col items-center gap-3 absolute bottom-8 right-10">
+      <span class="font-inter text-[0.55rem] tracking-[0.3em] uppercase text-neutral-300" style="writing-mode:vertical-rl;transform:rotate(180deg)">Scroll</span>
+      <span class="scroll-bar"></span>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       ABOUT
+  ════════════════════════════════════════ -->
+  <section id="about" class="border-t border-neutral-100 pt-24 md:pt-40 overflow-hidden">
+
+    <!-- Asymmetric editorial split: huge heading left, body right -->
+    <div class="about-editorial-top px-6 md:px-16 mb-16 md:mb-24">
+      <div class="about-heading-col">
+        <span class="section-label font-inter text-[0.6rem] tracking-[0.3em] uppercase text-neutral-400 mb-8 block">
+          Nosotros &mdash; 01
+        </span>
+        <h2 class="reveal-heading font-inter font-light leading-[1.05] tracking-[-0.03em] about-heading">
+          Pasión por las ideas.<br>Rigor en la ejecución.
+        </h2>
+      </div>
+      <div class="about-body-col">
+        <p class="reveal-text font-inter font-light text-neutral-500 leading-relaxed mb-8">
+          Independientes desde 1987. Combinamos décadas de experiencia
+          con una visión implacablemente moderna. No solo entregamos
+          proyectos; creamos soluciones a medida que elevan marcas y
+          conectan con la cultura.
+        </p>
+        <p class="font-playfair italic text-lg text-neutral-400 leading-relaxed">
+          "Ideas que mueven culturas."
+        </p>
+      </div>
+    </div>
+
+    <!-- Full-span feature image -->
+    <div class="about-feature-img">
+      <img
+        src="Imagenes Pagina/01 Nosotros/charlesdeluvio-Lks7vei-eAg-unsplash.jpg"
+        alt="Equipo GMD"
+        loading="lazy"
+      />
+    </div>
+
+  </section>
+
+  <!-- ════════════════════════════════════════
+       CAPABILITIES
+  ════════════════════════════════════════ -->
+  <section id="capabilities" class="px-6 md:px-16 pt-28 md:pt-44 pb-12 md:pb-20 border-t border-neutral-100">
+
+    <div class="flex items-end justify-between mb-16 md:mb-24">
+      <span class="section-label font-inter text-[0.6rem] tracking-[0.3em] uppercase text-neutral-400">
+        Servicios &mdash; 02
+      </span>
+    </div>
+
+    <h2 class="reveal-heading font-inter font-light leading-[0.9] tracking-[-0.03em] mb-20 md:mb-32"
+        style="font-size:clamp(2.5rem,7vw,8rem)">
+      Nuestras<br>Soluciones.
+    </h2>
+
+    <div class="cap-rows">
+
+      <div class="cap-row">
+        <span class="cap-num">01</span>
+        <div class="cap-body">
+          <h3 class="cap-title font-inter font-light">Branding y Diseño</h3>
+          <ul class="cap-list font-inter font-light">
+            <li>Diseño Gráfico</li>
+            <li>Diseño Industrial y Arquitectónico</li>
+            <li>Empaque</li>
+          </ul>
+        </div>
+        <div class="img-stack">
+          <div class="img-stack-item"><img src="Imagenes Pagina/02 Servicios/Branding y Diseño/balazs-ketyi-U008D4Jp2CY-unsplash.jpg" alt="" loading="lazy" /></div>
+          <div class="img-stack-item"><img src="Imagenes Pagina/02 Servicios/Branding y Diseño/mockup-free-M6Nb_jWKWwg-unsplash.jpg" alt="" loading="lazy" /></div>
+          <div class="img-stack-item"><img src="Imagenes Pagina/02 Servicios/Branding y Diseño/e43b1b7f39ad74b38ce2b3622091eba7.jpg" alt="" loading="lazy" /></div>
+        </div>
+      </div>
+
+      <div class="cap-row">
+        <span class="cap-num">02</span>
+        <div class="cap-body">
+          <h3 class="cap-title font-inter font-light">Campañas y Estrategia</h3>
+          <ul class="cap-list font-inter font-light">
+            <li>Publicidad ATL</li>
+            <li>Marketing Digital</li>
+            <li>BTL y Directo</li>
+          </ul>
+        </div>
+        <div class="img-stack">
+          <div class="img-stack-item"><img src="Imagenes Pagina/02 Servicios/Campañas y Estrategia/felirbe-zE6N5BPJDFY-unsplash.jpg" alt="" loading="lazy" /></div>
+          <div class="img-stack-item"><img src="Imagenes Pagina/02 Servicios/Campañas y Estrategia/7fc43b154bbe7fff007cd50a49c8f7de.jpg" alt="" loading="lazy" /></div>
+          <div class="img-stack-item"><img src="Imagenes Pagina/02 Servicios/Campañas y Estrategia/PRESENTACION-GMD-2025-V01.png" alt="" loading="lazy" /></div>
+        </div>
+      </div>
+
+      <div class="cap-row">
+        <span class="cap-num">03</span>
+        <div class="cap-body">
+          <h3 class="cap-title font-inter font-light">Contenido y Producción</h3>
+          <ul class="cap-list font-inter font-light">
+            <li>Producción Audiovisual</li>
+            <li>Ilustración y Animación</li>
+          </ul>
+        </div>
+        <div class="img-stack">
+          <div class="img-stack-item"><img src="Imagenes Pagina/02 Servicios/Contenido y Producción/VIDEO-ASISTENCIAS_2.png" alt="" loading="lazy" /></div>
+          <div class="img-stack-item"><img src="Imagenes Pagina/02 Servicios/Contenido y Producción/Banamex-Video-01.jpg" alt="" loading="lazy" /></div>
+          <div class="img-stack-item"><img src="Imagenes Pagina/02 Servicios/Contenido y Producción/Tomiin-Video-02.jpg" alt="" loading="lazy" /></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       CLIENTS — Logo marquee
+  ════════════════════════════════════════ -->
+  <section id="clients" class="pt-12 md:pt-20 pb-28 md:pb-44 overflow-hidden">
+
+    <div class="px-6 md:px-16 mb-16 md:mb-24">
+      <span class="section-label font-inter text-[0.6rem] tracking-[0.3em] uppercase text-neutral-400">
+        Clientes &mdash; 03
+      </span>
+    </div>
+
+    <!-- Row 1 — moves left -->
+    <div class="marquee-viewport mb-6">
+      <div class="marquee-inner" id="marquee-row-1">
+        <div class="marquee-set">
+          <div class="marquee-item"><img src="Logos Clientes/Citibanamex_logo.svg.png"  alt="Citibanamex" /></div>
+          <div class="marquee-item"><img src="Logos Clientes/PepsiCo-Logo-3.png"        alt="PepsiCo" /></div>
+          <div class="marquee-item"><img src="Logos Clientes/Adidas_logo.png"           alt="Adidas" /></div>
+          <div class="marquee-item"><img src="Logos Clientes/Aeromexico.png"            alt="Aeroméxico" /></div>
+          <div class="marquee-item"><img src="Logos Clientes/Telcel_logo.svg.png"       alt="Telcel" /></div>
+          <div class="marquee-item"><img src="Logos Clientes/HP_logo_2025.svg.png"      alt="HP" /></div>
+          <div class="marquee-item logo-lg"><img src="Logos Clientes/Banco_Azteca_Logo.png" alt="Banco Azteca" /></div>
+        </div>
+        <div class="marquee-set" aria-hidden="true">
+          <div class="marquee-item"><img src="Logos Clientes/Citibanamex_logo.svg.png"  alt="" /></div>
+          <div class="marquee-item"><img src="Logos Clientes/PepsiCo-Logo-3.png"        alt="" /></div>
+          <div class="marquee-item"><img src="Logos Clientes/Adidas_logo.png"           alt="" /></div>
+          <div class="marquee-item"><img src="Logos Clientes/Aeromexico.png"            alt="" /></div>
+          <div class="marquee-item"><img src="Logos Clientes/Telcel_logo.svg.png"       alt="" /></div>
+          <div class="marquee-item"><img src="Logos Clientes/HP_logo_2025.svg.png"      alt="" /></div>
+          <div class="marquee-item logo-lg"><img src="Logos Clientes/Banco_Azteca_Logo.png" alt="" /></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2 — moves right -->
+    <div class="marquee-viewport">
+      <div class="marquee-inner" id="marquee-row-2">
+        <div class="marquee-set">
+          <div class="marquee-item logo-lg"><img src="Logos Clientes/Elektra_Logo.png"  alt="Elektra" /></div>
+          <div class="marquee-item"><img src="Logos Clientes/Logo_TotalPlay.svg"        alt="TotalPlay" /></div>
+          <div class="marquee-item"><img src="Logos Clientes/Logo_de_BanCoppel.svg.png" alt="BanCoppel" /></div>
+          <div class="marquee-item"><img src="Logos Clientes/Wyeth_logo.svg.png"        alt="Wyeth" /></div>
+          <div class="marquee-item"><img src="Logos Clientes/64d51f0a7201d545fc3eb5cc_logo_baz_g.png" alt="BAZ" /></div>
+          <div class="marquee-item logo-lg"><img src="Logos Clientes/caminos-y-puentes-federales-mexico-logo-png_seeklogo-390799.png" alt="CAPUFE" /></div>
+        </div>
+        <div class="marquee-set" aria-hidden="true">
+          <div class="marquee-item logo-lg"><img src="Logos Clientes/Elektra_Logo.png"  alt="" /></div>
+          <div class="marquee-item"><img src="Logos Clientes/Logo_TotalPlay.svg"        alt="" /></div>
+          <div class="marquee-item"><img src="Logos Clientes/Logo_de_BanCoppel.svg.png" alt="" /></div>
+          <div class="marquee-item"><img src="Logos Clientes/Wyeth_logo.svg.png"        alt="" /></div>
+          <div class="marquee-item"><img src="Logos Clientes/64d51f0a7201d545fc3eb5cc_logo_baz_g.png" alt="" /></div>
+          <div class="marquee-item logo-lg"><img src="Logos Clientes/caminos-y-puentes-federales-mexico-logo-png_seeklogo-390799.png" alt="" /></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════
+       CONTACT / FOOTER
+  ════════════════════════════════════════ -->
+  <section id="contact" class="bg-black text-white px-6 md:px-16 pt-28 md:pt-44 pb-12">
+
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-16 mb-24 md:mb-40">
+
+      <!-- CTA headline -->
+      <div class="md:col-span-7">
+        <span class="font-inter text-[0.6rem] tracking-[0.3em] uppercase text-neutral-600 mb-10 block">
+          Contacto &mdash; 04
+        </span>
+        <h2 class="reveal-heading-dark font-manrope font-extrabold leading-[0.88] tracking-[-0.04em] mb-14"
+            style="font-size:clamp(3rem,8vw,8rem)">
+          Construyamos<br>algo grande.
+        </h2>
+        <a href="mailto:contacto@grupomardi.com"
+           class="cta-btn group font-inter text-[0.65rem] tracking-[0.28em] uppercase inline-flex items-center gap-5 border border-white px-8 py-5 hover:bg-white hover:text-black transition-colors duration-300">
+          Escríbenos
+          <span class="group-hover:translate-x-1 transition-transform duration-300">&rarr;</span>
+        </a>
+      </div>
+
+      <!-- Contact details -->
+      <div class="md:col-span-5 flex flex-col justify-end">
+        <div class="space-y-7 font-inter font-light text-neutral-500 text-sm">
+
+          <div>
+            <p class="text-[0.55rem] tracking-[0.25em] uppercase text-neutral-700 mb-1.5">Dirección</p>
+            <p class="leading-relaxed">Plaza San Jacinto 8 altos<br>San Ángel, México, D.F. 01000</p>
+          </div>
+
+          <div>
+            <p class="text-[0.55rem] tracking-[0.25em] uppercase text-neutral-700 mb-1.5">Teléfono</p>
+            <p>T &nbsp;(5255) 5550&thinsp;6645</p>
+            <p>C &nbsp;(5255) 2921&thinsp;3759</p>
+          </div>
+
+          <div>
+            <p class="text-[0.55rem] tracking-[0.25em] uppercase text-neutral-700 mb-1.5">Email</p>
+            <a href="mailto:contacto@grupomardi.com" class="block hover:text-white transition-colors duration-200">contacto@grupomardi.com</a>
+            <a href="mailto:maoh@grupomardi.com" class="block hover:text-white transition-colors duration-200">maoh@grupomardi.com</a>
+          </div>
+
+          <div>
+            <p class="text-[0.55rem] tracking-[0.25em] uppercase text-neutral-700 mb-1.5">Director General</p>
+            <p>Marco Aurelio Ortiz Haro</p>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer bar -->
+    <div class="border-t border-neutral-900 pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <img src="Logo GMD/Mesa de trabajo 5.png" alt="GMD" class="footer-logo h-6 w-auto" />
+      <p class="font-inter text-[0.55rem] tracking-[0.15em] uppercase text-neutral-700">
+        &copy; 2025 GMD Agencia Creativa &mdash; Todos los derechos reservados
+      </p>
+    </div>
+  </section>
+
+  <!-- ─── SCRIPTS ──────────────────────────────── -->
+  <script src="https://unpkg.com/lenis@1.3.15/dist/lenis.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  <script src="main.js"></script>
+
 </body>
 </html>
