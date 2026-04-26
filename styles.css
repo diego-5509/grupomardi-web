@@ -1,0 +1,729 @@
+/* ═══════════════════════════════════════════════════
+   GMD AGENCIA CREATIVA — Custom Stylesheet
+   Editorial Light Mode · Awwwards-grade polish
+   ═══════════════════════════════════════════════════ */
+
+*, *::before, *::after { box-sizing: border-box; }
+html { overflow-x: hidden; }
+
+::selection {
+  background-color: #cc0000;
+  color: #fff;
+}
+
+/* ── HERO TRAIL CARDS ────────────────────────────── */
+/*
+   Spawned by initHeroTrail() on mousemove over #hero.
+   Each card is position:fixed so it stays at cursor coords
+   regardless of scroll. GSAP drives all transforms.
+   Desktop-only — the JS function guards on innerWidth.
+*/
+.trail-card {
+  position: fixed;
+  top: 0;                /* anchor to viewport origin — GSAP x/y translates from here */
+  left: 0;
+  pointer-events: none;
+  z-index: 400;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.10);
+  will-change: transform, opacity;
+  /* No CSS transitions — GSAP owns everything */
+}
+.trail-card img {
+  display: block;
+  width: 100%;
+  height: auto;          /* natural aspect ratio — no crop */
+}
+
+
+/* ── CURSOR FOLLOWER ─────────────────────────────── */
+
+#cursor-img {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 260px;
+  aspect-ratio: 3 / 4;
+  border-radius: 12px;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 9000;
+  opacity: 0;
+  scale: 0.88;
+  /* GSAP controls transform — do NOT add CSS transitions here */
+  will-change: transform, opacity;
+}
+
+#cursor-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+
+/* ── HERO LOGO FIXED ─────────────────────────────── */
+/*
+   Anchored top-left — same position as the nav logo slot.
+   GSAP scales it down (transform-origin: top left) to
+   match the nav-logo-img dimensions as the user scrolls.
+*/
+#hero-logo-fixed {
+  position: fixed;
+  top: 24px;
+  left: 48px;
+  z-index: 60;
+  pointer-events: none;
+  transform-origin: top left;
+  will-change: transform, opacity;
+  opacity: 0; /* GSAP animates in on load */
+}
+
+#hero-logo-img {
+  width: clamp(200px, 34vw, 440px);
+  height: auto;
+  display: block;
+}
+
+#hero-logo-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: #cc0000;
+  width: clamp(200px, 34vw, 440px);
+}
+
+
+/* ── NAVBAR ──────────────────────────────────────── */
+
+#navbar {
+  padding: 24px 48px;
+  transition: background-color 0.5s ease, border-color 0.5s ease;
+  border-bottom: 1px solid transparent;
+  align-items: center;
+}
+
+#navbar.scrolled {
+  background-color: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom-color: #ebebeb;
+}
+
+/* Nav logo: invisible size reference — JS reads its width to set the scale target */
+#nav-logo-img {
+  height: 40px;
+  width: auto;
+  display: block;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Contacto link */
+.nav-cta {
+  position: relative;
+  line-height: 1;
+  margin-top: 6px; /* optical alignment with big logo */
+  color: #000;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.nav-cta::after {
+  content: '';
+  position: absolute;
+  bottom: -3px;
+  left: 0;
+  width: 0;
+  height: 1px;
+  background: #cc0000;
+  transition: width 0.45s cubic-bezier(0.625, 0.05, 0, 1);
+}
+.nav-cta:hover::after { width: 100%; }
+.nav-cta:hover { color: #cc0000; }
+
+
+/* ── HERO ────────────────────────────────────────── */
+
+#hero {
+  min-height: 100svh;
+  /* Two-column grid defined in HTML. No top padding needed —
+     the fixed logo floats above the left column naturally. */
+}
+
+.hero-label,
+.hero-sub,
+.hero-cta,
+.scroll-hint {
+  opacity: 0; /* GSAP animates these in on load */
+}
+
+.hero-heading {
+  font-size: clamp(4rem, 12vw, 12rem);
+  opacity: 0; /* GSAP owns */
+}
+
+.cta-line {
+  display: inline-block;
+  width: 2rem;
+  height: 1px;
+  background: currentColor;
+  transition: width 0.5s cubic-bezier(0.625, 0.05, 0, 1);
+}
+.hero-cta:hover .cta-line { width: 4rem; }
+
+.scroll-bar {
+  display: block;
+  width: 1px;
+  height: 52px;
+  background: linear-gradient(to bottom, #ccc 0%, transparent 100%);
+}
+
+
+/* ── WORD REVEAL MASK ────────────────────────────── */
+/*
+   Each word is wrapped: <span class="word-mask"><span class="word-inner">word</span></span>
+   The mask clips overflow; GSAP translates word-inner from 115% → 0
+*/
+
+.word-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  /* Extra room so descenders (g, j, p, q, y) don't clip */
+  padding-bottom: 0.25em;
+  margin-bottom: -0.25em;
+}
+
+.word-inner {
+  display: inline-block;
+  will-change: transform;
+}
+
+
+/* ── SECTION LABELS ──────────────────────────────── */
+
+.section-label {
+  opacity: 0; /* GSAP reveals */
+}
+
+
+/* ── ABOUT — EDITORIAL LAYOUT ────────────────────── */
+
+.about-editorial-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  align-items: end;
+}
+
+.about-heading-col { /* left column */ }
+
+/* 2-line heading: size + max-width work together to guarantee the wrap.
+   clamp is relative to viewport so both columns always fit one line each. */
+.about-heading {
+  font-size: clamp(1.9rem, 3.4vw, 4rem);
+  max-width: 22ch;
+}
+
+.about-body-col {
+  padding-bottom: 0.5rem;
+}
+
+.about-feature-img {
+  width: 100%;
+  height: clamp(400px, 55vw, 700px);
+  overflow: hidden;
+}
+
+.about-feature-img img {
+  width: 100%;
+  height: 115%;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
+  will-change: transform;
+}
+
+
+/* ── ABOUT IMAGE REVEAL (legacy, kept for parallax ref) ── */
+
+.about-img-clip {
+  width: 100%;
+  height: clamp(320px, 50vw, 580px);
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.about-img {
+  width: 100%;
+  height: 110%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  transform: translateY(8%);
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+
+/* ── TYPOGRAPHY: HEADING OVERRIDE ───────────────── */
+
+h1, h2, h3,
+.hero-heading,
+.reveal-heading,
+.reveal-heading-dark,
+.cap-title {
+  font-family: 'Inter', sans-serif !important;
+  font-weight: 300 !important;
+}
+
+/* Paragraph size +2pt across all body copy */
+p, .reveal-text { font-size: 1.0625rem; }
+.hero-sub       { font-size: 0.9375rem; }
+#about .reveal-text { font-size: 1.125rem; }
+
+
+/* ── CAPABILITIES (hover-reveal rows + image stacks) ── */
+
+.cap-rows { width: 100%; }
+
+.cap-row {
+  display: grid;
+  /* Desktop: num | body only — image gallery lives in the GSAP follower overlay */
+  grid-template-columns: 5rem 1fr;
+  gap: 0 48px;
+  align-items: center;
+  border-top: 1px solid #e8e8e8;
+  padding: 52px 0;
+  cursor: default;
+  position: relative;
+  transition: background-color 0.35s ease;
+}
+.cap-row:last-child { border-bottom: 1px solid #e8e8e8; }
+.cap-row:hover      { background-color: #f9f9f9; }
+
+.cap-num {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  color: #ccc;
+  align-self: start;
+  padding-top: 0.4rem;
+  transition: color 0.35s ease;
+}
+.cap-row:hover .cap-num { color: #cc0000; }
+
+.cap-title {
+  font-size: clamp(1.6rem, 3vw, 2.8rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: #111;
+  margin-bottom: 20px;
+  transition: color 0.35s ease;
+}
+.cap-row:hover .cap-title { color: #cc0000; }
+
+.cap-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.cap-list li {
+  font-size: 0.9375rem;
+  color: #aaa;
+  padding: 10px 0;
+  border-bottom: 1px solid #f0f0f0;
+  transition: color 0.25s ease, padding-left 0.35s cubic-bezier(0.625, 0.05, 0, 1);
+}
+.cap-list li:last-child  { border-bottom: none; }
+.cap-row:hover .cap-list li { color: #555; padding-left: 0.5rem; }
+
+/* ── IMG-STACK: hidden on desktop (data source for JS follower) ── */
+.img-stack {
+  display: none; /* GSAP reads src attributes; rendered by #cap-image-follower */
+}
+
+
+/* ── CAP IMAGE FOLLOWER (desktop only) ──────────────── */
+/*
+   A fixed container housing up to 3 floating image cards.
+   GSAP quickTo drives each card's x/y independently —
+   different durations create the trailing-deck effect.
+   Pointer-events:none so it never blocks the row hover.
+*/
+#cap-image-follower {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 500;
+  pointer-events: none;
+}
+
+.follower-slot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 278px;
+  height: 210px;        /* fixed height normalises portrait + landscape to same visual weight */
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.13);
+  will-change: transform, opacity;
+  /* Rotation baked in — GSAP sets opacity/scale, never rotates */
+}
+
+/* Cover-crop: fills the fixed box regardless of source aspect ratio */
+.follower-slot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+
+/* ── CLIENTS MARQUEE ─────────────────────────────── */
+
+.marquee-viewport {
+  overflow: hidden;
+  width: 100%;
+}
+
+.marquee-inner {
+  display: flex;
+  width: fit-content;
+  will-change: transform;
+}
+
+.marquee-set {
+  display: flex;
+  align-items: center;
+  gap: 80px;
+  padding: 0 40px;
+  flex-shrink: 0;
+}
+
+.marquee-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.3s cubic-bezier(0, 0, 0.2, 1);
+  cursor: default;
+}
+.marquee-item:hover { transform: scale(1.05); }
+
+.marquee-item img {
+  height: 48px;
+  width: auto;
+  max-width: 180px;
+  display: block;
+  object-fit: contain;
+  filter: grayscale(100%) opacity(0.5);
+  transition: filter 0.35s ease;
+}
+.marquee-item:hover img { filter: grayscale(0%) opacity(1); }
+
+/* Scaled-up logos for Banco Azteca, Elektra, CAPUFE */
+.marquee-item.logo-lg img {
+  height: 68px;
+  max-width: 220px;
+}
+
+
+/* ── HAMBURGER + MOBILE NAV ──────────────────────── */
+
+#hamburger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  width: 36px;
+  height: 36px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  z-index: 100;
+}
+
+.ham-line {
+  display: block;
+  width: 24px;
+  height: 1px;
+  background: #000;
+  transition: transform 0.4s cubic-bezier(0.625, 0.05, 0, 1),
+              opacity 0.3s ease;
+  transform-origin: center;
+}
+
+#hamburger[aria-expanded="true"] .ham-line:nth-child(1) {
+  transform: translateY(3.5px) rotate(45deg);
+}
+#hamburger[aria-expanded="true"] .ham-line:nth-child(2) {
+  transform: translateY(-3.5px) rotate(-45deg);
+}
+
+#mobile-nav {
+  position: fixed;
+  inset: 0;
+  background: #fff;
+  z-index: 9500;           /* above hero-logo-fixed (60) and all page content */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0 32px;
+  gap: 8px;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+}
+
+#mobile-nav.open {
+  pointer-events: auto;
+}
+
+.mobile-nav-link {
+  font-size: clamp(2.2rem, 11vw, 3.5rem);
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: #000;
+  text-decoration: none;
+  display: block;
+  /* No opacity/transform here — GSAP owns the enter animation via fromTo().
+     Setting opacity:0 in CSS caused from() to target 0→0 (invisible). */
+  transition: color 0.2s ease;
+  line-height: 1.1;
+}
+.mobile-nav-link:hover { color: #cc0000; }
+
+
+/* ── FOOTER ──────────────────────────────────────── */
+
+.footer-logo {
+  /* Black logo → invert to white on dark background */
+  filter: brightness(0) invert(1);
+  opacity: 0.3;
+}
+
+.cta-btn {
+  opacity: 0; /* GSAP reveals */
+  text-decoration: none;
+  color: inherit;
+}
+
+.reveal-text { opacity: 0; }
+
+
+/* ── RESPONSIVE ──────────────────────────────────── */
+
+@media (max-width: 767px) {
+  /* ── Navbar
+     Tailwind CDN injects display:flex AFTER styles.css loads,
+     so every display override here needs !important to win.   */
+  #navbar       { padding: 18px 20px; }
+  #nav-logo-img { height: 32px; }
+
+  /* Hide desktop links, show hamburger */
+  .nav-links { display: none !important; }
+  #hamburger { display: flex  !important; }
+
+  /* ── Hero logo — compact on mobile */
+  #hero-logo-fixed  { top: 20px; left: 20px; }
+  #hero-logo-img    { width: clamp(80px, 34vw, 130px); }
+  /* Hide the "Grupo Mardi / Agencia Creativa" text labels —
+     they clutter the small screen and the GSAP load animation
+     would re-show them even if opacity:0 is set in CSS.     */
+  #hero-logo-labels { display: none !important; }
+
+  /* ── Hero: only GMD logo + headline, nothing else          */
+  #hero {
+    grid-template-columns: 1fr !important;
+    min-height: 0 !important;      /* let content determine height — no dead space */
+    max-height: none !important;
+  }
+  .hero-left  { display: none !important; }   /* hides "Boutique creativa…" */
+  .hero-label { display: none !important; }   /* hides "Est. 1987 — CDMx"   */
+
+  .hero-right {
+    /* flex-start + padding-top = content sits right below the logo */
+    display:         flex !important;
+    flex-direction:  column !important;
+    justify-content: flex-start !important;
+    padding-top:     clamp(120px, 36vw, 165px) !important;
+    padding-left:    24px !important;
+    padding-right:   24px !important;
+    padding-bottom:  48px !important;
+  }
+  .hero-heading {
+    font-size:     clamp(2.8rem, 13vw, 4.4rem) !important;
+    margin-bottom: 28px !important;
+    line-height:   0.9  !important;
+  }
+  .hero-cta { margin-top: 0; }
+
+  /* About — vertical stack */
+  #about                          { padding-top: 20px; padding-bottom: 0; }
+  .about-editorial-top            {
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding: 0 20px;
+    margin-bottom: 28px;
+  }
+  .about-heading                  { max-width: none; }  /* full width on mobile */
+  .about-feature-img              { height: clamp(260px, 65vw, 420px); }
+
+  /* ── Capabilities: mobile "messy pile" layout ────────
+     Text first (row 1). Pile zone sits in row 2 and floats
+     up into the text's padding-bottom safe zone for the
+     layered magazine feel. Text z-index keeps it readable.
+
+     All 3 cards share the SAME horizontal anchor (centred,
+     absolutely positioned). Card 1 is position:relative to
+     give the container its natural height; cards 2 & 3 are
+     position:absolute so they overlay at the same anchor.
+     GSAP drives x / y / rotation per card to scatter the pile.
+     (see initMobileStackedReveal)                           */
+  #capabilities { padding: 32px 20px 48px; }
+
+  .cap-row {
+    display: grid;
+    grid-template-columns: 3.5rem 1fr;
+    grid-template-rows: auto auto;
+    padding: 0 0 8px;
+    gap: 0 16px;
+    overflow: visible;
+    position: relative;           /* required for z-index stacking context */
+  }
+
+  /* Descending z-index per row — row 1's overflowing pile renders above row 2's
+     border/background, row 2's pile renders above row 3, etc. */
+  .cap-row:nth-child(1) { z-index: 3; }
+  .cap-row:nth-child(2) { z-index: 2; }
+  .cap-row:nth-child(3) { z-index: 1; }
+
+  /* Text row — z-index above the card pile */
+  .cap-num {
+    grid-row: 1; grid-column: 1;
+    padding-top: 28px;
+    position: relative;
+    z-index: 5;
+  }
+  .cap-body {
+    grid-row: 1; grid-column: 2;
+    padding-top: 24px;
+    padding-bottom: 32px;      /* safe zone — pile floats up into here */
+    position: relative;
+    z-index: 5;
+  }
+
+  /* Pile zone — row 2, floats up into safe zone */
+  .img-stack {
+    display: block;            /* override desktop display:none */
+    grid-row: 2;
+    grid-column: 1 / -1;
+    position: relative;
+    margin-top: -24px;         /* overlap into text padding-bottom */
+    padding-bottom: 24px;      /* breathing room below the pile */
+    z-index: 10;               /* high enough to clear any row borders */
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  /* Card 1 — relative flow, LEFT anchor (sets container height) */
+  .img-stack-item:nth-child(1) {
+    position: relative;
+    width: 44%;
+    margin-left: 4%;
+    margin-right: auto;
+    z-index: 1;
+  }
+
+  /* Card 2 — absolute, RIGHT anchor */
+  .img-stack-item:nth-child(2) {
+    position: absolute;
+    top: 0;
+    right: 4%;
+    left: auto;
+    margin: 0;
+    width: 44%;
+    z-index: 2;
+  }
+
+  /* Card 3 — absolute, CENTER anchor (overlaps both, lands on top) */
+  .img-stack-item:nth-child(3) {
+    position: absolute;
+    top: 0;
+    left: 0; right: 0;
+    margin: 0 auto;
+    width: 44%;
+    z-index: 3;
+  }
+
+  /* Rows 2 & 3 have landscape images — slightly wider for visual balance */
+  .cap-row:nth-child(2) .img-stack-item:nth-child(1),
+  .cap-row:nth-child(3) .img-stack-item:nth-child(1) { width: 52%; margin-left: 2%; }
+  .cap-row:nth-child(2) .img-stack-item:nth-child(2),
+  .cap-row:nth-child(3) .img-stack-item:nth-child(2) { width: 52%; right: 2%; }
+  .cap-row:nth-child(2) .img-stack-item:nth-child(3),
+  .cap-row:nth-child(3) .img-stack-item:nth-child(3) { width: 52%; }
+
+  /* Extra air in rows 2 & 3 so wider landscape cards have room to spread */
+  .cap-row:nth-child(2) .cap-body,
+  .cap-row:nth-child(3) .cap-body { padding-bottom: 52px; }
+  .cap-row:nth-child(2) .img-stack,
+  .cap-row:nth-child(3) .img-stack { padding-bottom: 44px; }
+
+  /* Shift card 3 down in rows 2 & 3 so cards 1 & 2 remain visible beneath it */
+  .cap-row:nth-child(2) .img-stack-item:nth-child(3),
+  .cap-row:nth-child(3) .img-stack-item:nth-child(3) { top: 32px; }
+
+  /* Shared card styles */
+  .img-stack-item {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 14px 44px rgba(0, 0, 0, 0.22);
+    opacity: 0;                /* GSAP reveals */
+    will-change: transform, opacity;
+  }
+
+  .img-stack-item img {
+    width: 100%;
+    height: auto;              /* natural aspect ratio — zero forced cropping */
+    display: block;
+    pointer-events: none;
+  }
+
+  .cap-title              { font-size: clamp(1.3rem, 6vw, 1.8rem); }
+
+  /* Clients — bigger logos, tighter top (already tightened via section classes) */
+  #clients .px-6          { padding-left: 20px; padding-right: 20px; }
+  #clients .mb-16         { margin-bottom: 20px; }
+  .marquee-set            { gap: 56px; }
+  .marquee-item img       { height: 44px; max-width: 160px; }
+  .marquee-item.logo-lg img { height: 60px; max-width: 200px; }
+
+  /* Contact */
+  #contact                { padding: 56px 20px 40px; }
+  #contact h2             { font-size: clamp(2.2rem, 11vw, 3.5rem) !important; }
+
+  /* Global overflow guard */
+  body, #hero, #about, #clients, #contact {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  /* capabilities deliberately NOT in the overflow-x:hidden list
+     so mobile peek-deck cards can visually break out */
+}
+
+/* Tablet tweaks */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .cap-row             { grid-template-columns: 4rem 1fr; gap: 0 32px; }
+  .about-editorial-top { gap: 40px; }
+  .about-heading       { font-size: clamp(1.9rem, 3.4vw, 3.2rem); }
+}
