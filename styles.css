@@ -428,10 +428,16 @@ p, .reveal-text { font-size: 1.0625rem; }
 }
 .marquee-item:hover img { filter: grayscale(0%) opacity(1); }
 
+/* Scaled-down logos for visually large marks (Telcel, Wyeth) */
+.marquee-item.logo-sm img {
+  height: 32px;
+  max-width: 130px;
+}
+
 /* Scaled-up logos for Banco Azteca, Elektra, CAPUFE */
 .marquee-item.logo-lg img {
-  height: 68px;
-  max-width: 220px;
+  height: 90px;
+  max-width: 240px;
 }
 
 
@@ -705,8 +711,9 @@ p, .reveal-text { font-size: 1.0625rem; }
   #clients .px-6          { padding-left: 20px; padding-right: 20px; }
   #clients .mb-16         { margin-bottom: 20px; }
   .marquee-set            { gap: 56px; }
-  .marquee-item img       { height: 44px; max-width: 160px; }
-  .marquee-item.logo-lg img { height: 60px; max-width: 200px; }
+  .marquee-item img         { height: 44px; max-width: 160px; }
+  .marquee-item.logo-sm img { height: 28px; max-width: 110px; }
+  .marquee-item.logo-lg img { height: 78px; max-width: 210px; }
 
   /* Contact */
   #contact                { padding: 56px 20px 40px; }

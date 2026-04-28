@@ -703,11 +703,17 @@ document.fonts.ready.then(() => {
   initHeadingReveals();
   initMiscReveals();
   initImageParallax();
-  initClientsMarquee();
   initHamburger();
   initCapabilityStacks();
   initAboutFeatureParallax();
   initHeroTrail();
 
   ScrollTrigger.refresh();
+});
+
+// Marquee runs after ALL assets (images included) are loaded so that
+// offsetWidth captures the true rendered set width — prevents the
+// loop-point glitch caused by images loading after the measurement.
+window.addEventListener('load', () => {
+  initClientsMarquee();
 });
