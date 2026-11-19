@@ -355,11 +355,39 @@
     <!-- Footer bar -->
     <div class="border-t border-neutral-900 pt-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
       <img src="Logo GMD/Mesa de trabajo 5.png" alt="GMD" class="footer-logo h-6 w-auto" />
-      <p class="font-inter text-[0.55rem] tracking-[0.15em] uppercase text-neutral-700">
-        &copy; 2025 GMD Agencia Creativa &mdash; Todos los derechos reservados
-      </p>
+      <div class="flex flex-col md:flex-row md:items-center gap-3 md:gap-8">
+        <button type="button" id="privacy-open" class="font-inter text-[0.55rem] tracking-[0.15em] uppercase text-neutral-500 hover:text-white transition-colors duration-200 text-left">Aviso de privacidad</button>
+        <p class="font-inter text-[0.55rem] tracking-[0.15em] uppercase text-neutral-700">
+          &copy; 2025 GMD Agencia Creativa &mdash; Todos los derechos reservados
+        </p>
+      </div>
     </div>
   </section>
+
+  <!-- ════════════════════════════════════════
+       AVISO DE PRIVACIDAD — pop-up (simplificado)
+  ════════════════════════════════════════ -->
+  <dialog id="privacy-dialog" aria-labelledby="privacy-title" data-lenis-prevent>
+    <button type="button" class="privacy-close" id="privacy-close" aria-label="Cerrar">&times;</button>
+    <h2 id="privacy-title">Aviso de Privacidad Simplificado</h2>
+    <p>Grupo Mar Diseñadores, S.A. de C.V. (GMD), con domicilio en Plaza San Jacinto 8 altos, San Ángel, Alcaldía Álvaro Obregón, Ciudad de México, C.P. 01000, utilizará su nombre, puesto, correo electrónico y teléfono laboral para mantener la relación comercial y coordinar el desarrollo de proyectos y la prestación de los servicios contratados.</p>
+    <p>De manera adicional y opcional, podremos utilizar sus datos de contacto para enviar felicitaciones en ocasiones especiales. Puede rechazar este uso escribiendo a <a href="mailto:javier@grupomardi.com">javier@grupomardi.com</a>, sin afectar nuestra relación comercial ni los servicios.</p>
+    <p>Para conocer el tratamiento de sus datos, las posibles transferencias y los procedimientos para ejercer sus derechos de acceso, rectificación, cancelación y oposición (ARCO), revocar su consentimiento o limitar el uso o divulgación de sus datos, consulte nuestro Aviso de Privacidad Integral.</p>
+    <a class="privacy-btn" href="legal/aviso-privacidad-integral.pdf" target="_blank" rel="noopener">Ver aviso completo &rarr;</a>
+  </dialog>
+  <script>
+    (function () {
+      var d = document.getElementById('privacy-dialog');
+      document.getElementById('privacy-open').addEventListener('click', function () {
+        d.showModal();
+        if (typeof lenis !== 'undefined') lenis.stop();
+      });
+      function closed() { if (typeof lenis !== 'undefined') lenis.start(); }
+      document.getElementById('privacy-close').addEventListener('click', function () { d.close(); });
+      d.addEventListener('close', closed);
+      d.addEventListener('click', function (e) { if (e.target === d) d.close(); });
+    })();
+  </script>
 
   <!-- ─── SCRIPTS ──────────────────────────────── -->
   <script src="https://unpkg.com/lenis@1.3.15/dist/lenis.min.js"></script>

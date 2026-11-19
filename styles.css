@@ -734,3 +734,20 @@ p, .reveal-text { font-size: 1.0625rem; }
   .about-editorial-top { gap: 40px; }
   .about-heading       { font-size: clamp(1.9rem, 3.4vw, 3.2rem); }
 }
+
+/* ── Aviso de privacidad (pop-up) ── */
+#privacy-dialog {
+  border: 0; padding: 2.5rem; max-width: min(34rem, calc(100vw - 2rem));
+  max-height: calc(100vh - 2rem); overflow-y: auto;
+  background: #fff; color: #000; font-family: 'Inter', sans-serif; font-weight: 300;
+}
+#privacy-dialog::backdrop { background: rgba(0,0,0,.7); }
+#privacy-dialog h2 { font-weight: 400; font-size: 1.4rem; letter-spacing: -.02em; margin: 0 2rem 1.25rem 0; }
+#privacy-dialog p { font-size: .85rem; line-height: 1.65; color: #404040; margin: 0 0 1rem; }
+#privacy-dialog p a { text-decoration: underline; text-decoration-color: #cc0000; text-underline-offset: 3px; }
+.privacy-close { position: absolute; top: 1rem; right: 1.25rem; background: none; border: 0; font-size: 1.75rem; line-height: 1; cursor: pointer; }
+.privacy-btn {
+  display: inline-block; margin-top: .75rem; padding: 1rem 1.75rem; background: #000; color: #fff;
+  font-size: .62rem; letter-spacing: .24em; text-transform: uppercase; text-decoration: none; transition: background .25s;
+}
+.privacy-btn:hover { background: #cc0000; }
