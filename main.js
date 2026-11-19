@@ -26,7 +26,21 @@ gsap.registerPlugin(ScrollTrigger);
    callback into GSAP's ticker so ScrollTrigger stays
    perfectly in sync with smooth-scrolled positions.
 */
-const lenis = new Lenis({ wheelMultiplier: 0.85, lerp: 0.1 });
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Precarga + decodifica imágenes en tiempo libre para que el primer hover/movimiento no se trabe
+function preloadImages(srcs) {
+  const run = () => srcs.forEach((src) => {
+    const im = new Image();
+    im.src = src;
+    if (im.decode) im.decode().catch(() => {});
+  });
+  (window.requestIdleCallback || ((fn) => setTimeout(fn, 600)))(run);
+}
+
+const lenis = new Lenis({ wheelMultiplier: 0.85, lerp: 0.1, smoothWheel: !reduceMotion });
+// Con prefers-reduced-motion las animaciones de entrada terminan casi al instante
+if (reduceMotion) gsap.globalTimeline.timeScale(100);
 gsap.ticker.add((time) => lenis.raf(time * 1000));
 gsap.ticker.lagSmoothing(0); // Prevents GSAP from "catching up" after tab blur
 
@@ -78,7 +92,7 @@ function initLogoMorphAnimation() {
         trigger: '#hero',
         start: 'top top',
         end: '+=600',
-        scrub: 1.5,
+        scrub: true, // Lenis ya suaviza el scroll; un segundo suavizado causa retraso
       },
     });
 
@@ -91,7 +105,7 @@ function initLogoMorphAnimation() {
           trigger: '#hero',
           start: 'top top',
           end: '+=220',
-          scrub: 1,
+          scrub: true,
         },
       });
     }
@@ -281,7 +295,7 @@ function initImageParallax() {
         trigger: '.about-img-clip',
         start: 'top bottom',
         end: 'bottom top',
-        scrub: 1,
+        scrub: true,
       },
     });
   }
@@ -429,6 +443,7 @@ function initCapabilityStacks() {
     initMobileStackedReveal(cap);
     return;
   }
+  if (reduceMotion) return; // sin galería flotante que sigue al cursor
 
   /* ── Desktop: floating mouse-follow gallery ─────── */
 
@@ -491,6 +506,9 @@ function initCapabilityStacks() {
       gsap.to(el, { opacity: 0, scale: 0.85, duration: 0.28, ease: 'power3.in' })
     );
   };
+
+  // Precarga las imágenes de todas las filas para que el hover sea instantáneo
+  preloadImages(Array.from(cap.querySelectorAll('.img-stack-item img')).map((i) => i.getAttribute('src')));
 
   // ── Row hover: swap images per row ─────────────────
   cap.querySelectorAll('.cap-row').forEach((row) => {
@@ -593,23 +611,25 @@ function initMobileStackedReveal(cap) {
    Throttled to ~120ms to avoid DOM flooding.
 */
 function initHeroTrail() {
-  if (window.innerWidth < 768) return;
+  if (window.innerWidth < 768 || reduceMotion) return;
   const hero = document.getElementById('hero');
   if (!hero) return;
 
   const IMAGES = [
-    'Imagenes Pagina/00 Header/PRESENTACION-GMD-2025-02.png',
-    'Imagenes Pagina/00 Header/PRESENTACION-GMD-2025-03.png',
-    'Imagenes Pagina/00 Header/PRESENTACION-GMD-2025-04.png',
-    'Imagenes Pagina/00 Header/PRESENTACION-GMD-2025-05.png',
-    'Imagenes Pagina/00 Header/PRESENTACION-GMD-2025-06.png',
-    'Imagenes Pagina/00 Header/PRESENTACION-GMD-2025-07.png',
-    'Imagenes Pagina/00 Header/PRESENTACION-GMD-2025-08.png',
-    'Imagenes Pagina/00 Header/PRESENTACION-GMD-2025-09.png',
-    'Imagenes Pagina/00 Header/PRESENTACION-GMD-2025-10.png',
+    'Imagenes Pagina/00 Header/PRESENTACION-GMD-2025-02.webp',
+    'Imagenes Pagina/00 Header/PRESENTACION-GMD-2025-03.webp',
+    'Imagenes Pagina/00 Header/PRESENTACION-GMD-2025-04.webp',
+    'Imagenes Pagina/00 Header/PRESENTACION-GMD-2025-05.webp',
+    'Imagenes Pagina/00 Header/PRESENTACION-GMD-2025-06.webp',
+    'Imagenes Pagina/00 Header/PRESENTACION-GMD-2025-07.webp',
+    'Imagenes Pagina/00 Header/PRESENTACION-GMD-2025-08.webp',
+    'Imagenes Pagina/00 Header/PRESENTACION-GMD-2025-09.webp',
+    'Imagenes Pagina/00 Header/PRESENTACION-GMD-2025-10.webp',
   ];
 
-  const CARD_W   = 260;   // px wide (+20% again from 216) — natural height, no crop
+  preloadImages(IMAGES);
+
+  const CARD_W   = 260;  // px wide (+20% again from 216) — natural height, no crop
   const THROTTLE = 140;   // ms between spawns
   const FLOAT_PX = 200;   // how far the card drifts upward while fading
 
@@ -690,7 +710,7 @@ function initAboutFeatureParallax() {
       trigger: '.about-feature-img',
       start: 'top bottom',
       end: 'bottom top',
-      scrub: 1,
+      scrub: true,
     },
   });
 }
@@ -715,5 +735,7 @@ document.fonts.ready.then(() => {
 // offsetWidth captures the true rendered set width — prevents the
 // loop-point glitch caused by images loading after the measurement.
 window.addEventListener('load', () => {
-  initClientsMarquee();
+  if (!reduceMotion) initClientsMarquee();
+  // Las imágenes ya cargaron: recalcula posiciones de todas las animaciones de scroll
+  ScrollTrigger.refresh();
 });
